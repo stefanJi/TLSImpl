@@ -26,20 +26,20 @@ Application Data             <------->     Application Data
 ```
 ### Client Flow
 
--[x] Client Hello
--[ ] Client Key Exchange
--[ ] Certificate Verify
--[ ] Change Cipher Spec
--[ ] Application Data
+- [x] Client Hello
+- [ ] Client Key Exchange
+- [ ] Certificate Verify
+- [ ] Change Cipher Spec
+- [ ] Application Data
 
 ### Server Flow Parse
 
--[x] Server Hello
--[x] Certificate
--[ ] ServerHello
--[ ] Certificate
--[ ] ServerKeyExchang
--[x] ServerHelloDone
--[ ] ChangeCipherSpec
--[ ] Finished
--[ ] Application Data
+- [x] Server Hello
+- [x] Certificate
+- [ ] ServerHello
+- [ ] Certificate
+- [ ] ServerKeyExchang
+- [x] ServerHelloDone
+- [ ] ChangeCipherSpec
+- [ ] Finished
+- [ ] Application Data
