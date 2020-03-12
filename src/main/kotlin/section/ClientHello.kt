@@ -1,3 +1,7 @@
+package section
+
+import Content
+import putUint16
 import java.nio.ByteBuffer
 
 /**
@@ -13,7 +17,7 @@ import java.nio.ByteBuffer
  *    case true:
  *    Extension extensions<0..2^16-1>;
  *  };
- *} ClientHello;
+ *} section.ClientHello;
  */
 class ClientHello(
     val majorVersion: Byte,
@@ -33,8 +37,7 @@ class ClientHello(
             put(tlsRandomHeader.data().array())
             put(sessionId.size.toByte()) /*session id length*/
             put(sessionId)
-            put((cipherSuitesLen shr 8 and 0xFF).toByte())
-            put((cipherSuitesLen and 0xFF).toByte())
+            putUint16(cipherSuitesLen)
             put(cipherSuites)
             put(compressionMethodsLen)
             put(compressionMethods)

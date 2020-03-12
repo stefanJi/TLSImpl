@@ -1,3 +1,6 @@
+import section.HandshakeData
+import section.ServerHello
+import section.TLSPlaintext
 import java.io.OutputStream
 import java.nio.ByteBuffer
 
@@ -21,9 +24,10 @@ class ServerRespParser(private val outs: OutputStream) {
         while (offset < data.size) {
             val tlsPlaintext = TLSPlaintext.parse(buffer)
             offset += tlsPlaintext.size()
+            println("tls plaint length: ${tlsPlaintext.size()}")
             when (tlsPlaintext.contentType) {
                 ContentType.handshake -> {
-                    handleHandshake(tlsPlaintext.content.data())
+                    handleHandshake(tlsPlaintext.fragment.data())
                 }
                 ContentType.change_cipher_spec -> {
                 }
@@ -39,7 +43,7 @@ class ServerRespParser(private val outs: OutputStream) {
         val handshakeData = HandshakeData.parse(buffer)
         val handshakeType = handshakeData.msgType
         val length = handshakeData.body.size()
-        println("handshake data: $handshakeType $length")
+        println("handshake data type: $handshakeType length: $length")
         val content = handshakeData.body.data()
 
         when (handshakeType) {
@@ -76,16 +80,18 @@ class ServerRespParser(private val outs: OutputStream) {
     private fun handleServerHello(buffer: ByteBuffer) {
         println("handle server hello")
         val serverHello = ServerHello.parse(buffer)
-        println(serverHello)
     }
 
     private fun handleCertificate(buffer: ByteBuffer) {
         println("handle certificate")
         val certificatesLength = buffer.getUint24()
+        println("certificate length: $certificatesLength")
         var offset = 0
+        var index = 0
         while (offset < certificatesLength) {
             val certificateLength = buffer.getUint24()
             val certificate = ByteArray(certificateLength)
+            println("certificate #$index len: $certificateLength")
             buffer.get(certificate)
             offset += 3 /*uint24 certificate length*/
             offset += certificateLength

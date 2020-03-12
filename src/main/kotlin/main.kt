@@ -1,3 +1,4 @@
+import java.io.BufferedInputStream
 import java.net.Inet4Address
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -13,18 +14,18 @@ fun tlsHandshake(host: String) {
     val ins = tcpSocket.getInputStream() /*server's output*/
 
     val clientReqMaker = ClientReqMaker()
-    val serverRespParser = ServerRespParser(os)
     os.write(clientReqMaker.makeClientHello())
 
     try {
-        while (true) {
-            if (ins.available() > 0) {
-                val available = ins.available()
-                val received = ByteArray(available)
-                ins.read(received)
-                serverRespParser.parse(received)
-            }
-        }
+        val type = ins.read()
+        println("${System.currentTimeMillis()} type: $type")
+        val contentType = ContentType.values().find { type == it.type.toInt() }
+            ?: error("Not found match ContentType. $type")
+        val major = ins.read()
+        val minor = ins.read()
+        val contentLength = ins.readUint16()
+        println("type: $contentType major: $major minor: $minor len: $contentLength")
+
     } catch (e: Exception) {
         e.printStackTrace()
     }

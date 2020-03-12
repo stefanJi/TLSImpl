@@ -1,3 +1,6 @@
+import section.HandshakeData
+import section.TLSPlaintext
+import section.TlsRandomHeader
 import kotlin.random.Random
 
 /**
@@ -23,13 +26,18 @@ class ClientReqMaker : ClientFlow {
             return cipherSuites
         }
 
-        val clientHello = ClientHello(TLS_VERSION_MAJOR, TLS_VERSION_MINOR,
+        val clientHello = section.ClientHello(TLS_VERSION_MAJOR, TLS_VERSION_MINOR,
             TlsRandomHeader(randomTime, random), ByteArray(0),
             makeCipher(),
             ByteArray(1) { 0 })
 
         val handshakeData = HandshakeData(HandshakeType.client_hello, clientHello)
-        val tlsPlaintext = TLSPlaintext(ContentType.handshake, TLS_VERSION_MAJOR, TLS_VERSION_MINOR, handshakeData)
+        val tlsPlaintext = TLSPlaintext(
+            ContentType.handshake,
+            TLS_VERSION_MAJOR,
+            TLS_VERSION_MINOR,
+            handshakeData
+        )
         return tlsPlaintext.data().array()
     }
 
